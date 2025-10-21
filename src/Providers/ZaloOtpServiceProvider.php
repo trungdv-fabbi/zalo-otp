@@ -1,9 +1,9 @@
 <?php
 
-namespace TrungDV\ZaloOtp;
+namespace TrungDV\ZaloOtp\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use TrungDV\ZaloOtp\Services\ZaloOtpService;
+use TrungDV\ZaloOtp\ZaloClient;
 
 class ZaloOtpServiceProvider extends ServiceProvider
 {
@@ -12,11 +12,12 @@ class ZaloOtpServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ZaloOtpService::class, function ($app) {
-            return new ZaloOtpService();
+        $this->app->bind('zalo-otp', function() {
+            return new ZaloClient;
         });
-
-        $this->app->alias(ZaloOtpService::class, 'zalo-otp');
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/zalo-otp.php', 'zalo-otp'
+        );
     }
 
     /**
@@ -27,9 +28,5 @@ class ZaloOtpServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/zalo-otp.php' => config_path('zalo-otp.php'),
         ], 'config');
-
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/zalo-otp.php', 'zalo-otp'
-        );
     }
 }
