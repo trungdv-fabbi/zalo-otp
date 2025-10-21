@@ -78,6 +78,11 @@ class ZaloClient
     {
         $http = Http::withHeaders($this->headers);
         if(!empty($this->params)) {
+            // Check if Content-Type is form-urlencoded
+            if (isset($this->headers['Content-Type']) &&
+                str_contains($this->headers['Content-Type'], 'application/x-www-form-urlencoded')) {
+                $http = $http->asForm();
+            }
             $http = $http->withBody(json_encode($this->params));
         }
         return $http;
@@ -124,7 +129,7 @@ class ZaloClient
     public function setAuthorization(string $access_token)
     {
         $this->setHeaders([
-            'access_token' => "{$access_token}"
+            'access_token' => $access_token
         ]);
 
         return $this;
@@ -140,13 +145,17 @@ class ZaloClient
     public function refreshToken()
     {
         $this->setRequestUrl(ZaloUri::ACCESS_TOKEN_URI, false)
-            ->setHeaders(['secret_key' => $this->app_secret])
+            ->setHeaders([
+                'secret_key' => $this->app_secret,
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ])
             ->setParams([
                 "app_id" => $this->app_id,
                 "grant_type" => ZaloUri::GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token" => $this->refresh_token
             ]);
         $this->response = $this->http()
+            ->asForm()
             ->post($this->request_url);
         return $this->response;
     }
