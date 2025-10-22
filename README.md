@@ -48,14 +48,6 @@ return [
     'retry_attempts' => env('ZALO_OTP_RETRY_ATTEMPTS', 3),
 ];
 ```
-## config
-```
-  // bootstrap/providers.php
-return [
-    App\Providers\AppServiceProvider::class,
-    TrungDV\ZaloOtp\Providers\ZaloOtpServiceProvider::class,
-];
-```
 
 ## Usage
 

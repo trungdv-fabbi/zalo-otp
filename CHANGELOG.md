@@ -1,55 +1,55 @@
 # Changelog
 
-Tất cả các thay đổi quan trọng của package này sẽ được ghi lại trong file này.
+All notable changes to this package will be documented in this file.
 
-Format dựa trên [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-và package này tuân thủ [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
-- Hỗ trợ Laravel 12.x
-- Method `formatPhoneNumber()` để format số điện thoại
-- Method `setRequestUrl()` với hỗ trợ URL đầy đủ và endpoint
-- Method `setAuthorization()` để thiết lập access token
-- Method `setRefreshToken()` để thiết lập refresh token
-- Method `getStatusMessage()` để lấy trạng thái message
-- HTTP methods thông qua `__call` magic method
-- Singleton pattern với `getInstance()`
+- Support for Laravel 12.x
+- Method `formatPhoneNumber()` to format phone numbers
+- Method `setRequestUrl()` with support for full URLs and endpoints
+- Method `setAuthorization()` to set access token
+- Method `setRefreshToken()` to set refresh token
+- Method `getStatusMessage()` to get message status
+- HTTP methods through `__call` magic method
+- Singleton pattern with `getInstance()`
 
 ### Changed
-- Cải thiện error handling trong `getJson()` method
-- Tối ưu hóa URL handling trong `setRequestUrl()`
-- Cải thiện logic trong `formatParams()` method
+- Improved error handling in `getJson()` method
+- Optimized URL handling in `setRequestUrl()`
+- Improved logic in `formatParams()` method
 
 ### Fixed
-- Sửa lỗi URL duplicate khi sử dụng `setRequestUrl()`
-- Sửa lỗi logic trong `formatParams()` method
-- Sửa lỗi type declaration cho `$app_id` và `$app_secret`
+- Fixed URL duplicate issue when using `setRequestUrl()`
+- Fixed logic error in `formatParams()` method
+- Fixed type declaration for `$app_id` and `$app_secret`
 
-## [1.0.0] - 2024-01-15
+## [1.0.0] - 2025-10-22
 
 ### Added
 - Initial release
-- Hỗ trợ gửi OTP qua Zalo API
-- Hỗ trợ refresh access token
-- Hỗ trợ lấy trạng thái message
-- Facade `ZaloOtp` để sử dụng dễ dàng
-- Service Provider để đăng ký với Laravel
-- Configuration file với các tùy chọn cấu hình
-- Hỗ trợ HTTP methods (GET, POST, PUT, PATCH)
-- Hỗ trợ custom headers và parameters
-- Error handling và logging
-- Test cases cơ bản
-- Documentation đầy đủ
+- Support for sending OTP via Zalo API
+- Support for refreshing access token
+- Support for getting message status
+- `ZaloOtp` Facade for easy usage
+- Service Provider for Laravel registration
+- Configuration file with configurable options
+- Support for HTTP methods (GET, POST, PUT, PATCH)
+- Support for custom headers and parameters
+- Error handling and logging
+- Basic test cases
+- Complete documentation
 
 ### Features
-- **ZaloClient**: Class chính để tương tác với Zalo API
-- **ZaloOtp Facade**: Facade để sử dụng dễ dàng
-- **ZaloOtpServiceProvider**: Service Provider cho Laravel
-- **Configuration**: File cấu hình với environment variables
-- **ZaloUri**: Constants cho các API endpoints
-- **ErrorType**: Enum cho các loại lỗi
+- **ZaloClient**: Main class for interacting with Zalo API
+- **ZaloOtp Facade**: Facade for easy usage
+- **ZaloOtpServiceProvider**: Service Provider for Laravel
+- **Configuration**: Config file with environment variables
+- **ZaloUri**: Constants for API endpoints
+- **ErrorType**: Enum for error types
 
 ### Requirements
 - PHP >= 8.1
@@ -60,15 +60,4 @@ và package này tuân thủ [Semantic Versioning](https://semver.org/spec/v2.0.
 ```bash
 composer require trungdv/zalo-otp
 php artisan vendor:publish --tag=config
-```
-
-### Usage
-```php
-use TrungDV\ZaloOtp\Facades\ZaloOtp;
-
-$client = ZaloOtp::getInstance();
-$response = $client->sendOtp([
-    'phone' => '0123456789',
-    'message' => 'Mã OTP của bạn là: {otp_code}'
-]);
 ```
