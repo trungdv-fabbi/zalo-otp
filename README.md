@@ -69,7 +69,7 @@ $response = $client
             'otp' => '123456'
         ]
     ]);
-
+```
 **Testing Mode:**
 If you want to test sending messages without actually delivering them to users, you can add the `"mode": "development"` option in the params when calling `sendOtp()`. 
 
