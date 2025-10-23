@@ -17,6 +17,7 @@ class ZaloClient
     protected string $bussiness_base_url;
     protected ?string $app_id;
     protected ?string $app_secret;
+    protected ?string $template_id;
     protected int $timeout;
     protected int $retry_attempts;
     protected string $access_token = '';
@@ -37,28 +38,42 @@ class ZaloClient
         $this->bussiness_base_url = config('zalo-otp.bussiness_base_url', 'https://business.openapi.zalo.me/');
         $this->app_id = config('zalo-otp.app_id', '');
         $this->app_secret = config('zalo-otp.app_secret', '');
+        $this->template_id = config('zalo-otp.template_id', '');
         $this->timeout = config('zalo-otp.timeout', 30);
         $this->retry_attempts = config('zalo-otp.retry_attempts', 3);
     }
 
     public function __call(string $method, array $arguments)
     {
-        if (in_array($method, ['get', 'post', 'put', 'patch', 'option']) && !empty($arguments)) {
-            if (!empty($this->request_url)) {
+        if (in_array($method, ['get', 'post', 'put', 'patch', 'option'])) {
+            if (!empty($arguments[0])) {
                 $endpoint = $arguments[0];
-                if (str_starts_with($endpoint, '/')) {
-                    $endpoint = substr($endpoint, 1);
+                if (str_starts_with($endpoint, 'http://') || str_starts_with($endpoint, 'https://')) {
+                    $url = $endpoint;
+                } elseif (!empty($this->request_url)) {
+                    if (str_starts_with($endpoint, '/')) {
+                        $endpoint = substr($endpoint, 1);
+                    }
+                    $url = rtrim($this->request_url, '/') . '/' . $endpoint;
+                } else {
+                    $url = $endpoint;
                 }
-                $url = rtrim($this->request_url, '/') . '/' . $endpoint;
+            } elseif (!empty($this->request_url)) {
+                $url = $this->request_url;
             } else {
-                $url = $arguments[0];
+                throw new \InvalidArgumentException('No URL provided for ' . $method . ' request');
             }
 
             if (!empty($arguments[1])) {
                 $params = is_array($arguments[1]) ? $arguments[1] : [$arguments[1]];
                 $this->setParams($params);
             }
-            $this->response = $this->http()->{$method}($url);
+
+            if (!$this->params) {
+                $this->response = $this->http()->{$method}($url);
+            } else {
+                $this->response = $this->http()->{$method}($url, $this->params);
+            }
 
             return $this->response;
         }
@@ -142,6 +157,13 @@ class ZaloClient
         return $this;
     }
 
+    public function flushParams()
+    {
+        $this->params = [];
+
+        return $this;
+    }
+
     public function refreshToken()
     {
         $this->setRequestUrl(ZaloUri::ACCESS_TOKEN_URI, false)
@@ -154,28 +176,32 @@ class ZaloClient
                 "grant_type" => ZaloUri::GRANT_TYPE_REFRESH_TOKEN,
                 "refresh_token" => $this->refresh_token
             ]);
-        $this->response = $this->http()
-            ->post($this->request_url);
+        $this->response = $this->post();
+
         return $this->response;
     }
 
     public function getStatusMessage(array $params = [])
     {
         $params = $this->formatParams($params);
-        $queryParams = http_build_query($params);
-        $url = $this->setRequestUrl(ZaloUri::GET_STATUS_MESSAGE_URI, false)->getUrl();
-        $this->response = $this->http()
-            ->get($url . '?' . $queryParams);
+        $url = ZaloUri::GET_STATUS_MESSAGE_URI . '?' . http_build_query($params);
+        $this->flushParams();
+        $this->setRequestUrl($url, true);
+        $this->response = $this->get();
+
         return $this->response;
     }
 
     public function sendOtp( array $params = [])
     {
         $params = $this->formatParams($params);
+        if (empty($params['template_id'])) {
+            $params['template_id'] = $this->template_id;
+        }
         $this->setRequestUrl(ZaloUri::SEND_OTP_URI)
             ->setParams($params);
-        $this->response = $this->http()
-            ->post($this->request_url);
+        $this->response = $this->post();
+
         return $this->response;
     }
 

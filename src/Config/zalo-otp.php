@@ -5,9 +5,6 @@ return [
     |--------------------------------------------------------------------------
     | Zalo OTP Configuration
     |--------------------------------------------------------------------------
-    |
-    | Cấu hình cho Zalo OTP API
-    |
     */
 
     'base_url' => env('ZALO_OTP_BASE_URL', 'https://oauth.zaloapp.com/v4/'),
@@ -21,5 +18,7 @@ return [
     'timeout' => env('ZALO_OTP_TIMEOUT', 30),
 
     'retry_attempts' => env('ZALO_OTP_RETRY_ATTEMPTS', 3),
+
+    'template_id' => env('ZALO_OTP_TEMPLATE_ID', ''),
 ];
 

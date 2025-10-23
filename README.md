@@ -60,13 +60,33 @@ use TrungDV\ZaloOtp\Facades\ZaloOtp;
 $client = ZaloOtp::getInstance();
 
 // Send OTP
-$response = $client->sendOtp([
-    'phone' => '0123456789',
-    'template_id' => 'your_template_id',
-    'template_data' => [
-        'otp' => '123456'
-    ]
-]);
+$response = $client
+    ->setAuthorization({asset_token})
+    ->sendOtp([
+        'phone' => '0123456789',
+        'template_id' => 'your_template_id',
+        'template_data' => [
+            'otp' => '123456'
+        ]
+    ]);
+
+**Testing Mode:**
+If you want to test sending messages without actually delivering them to users, you can add the `"mode": "development"` option in the params when calling `sendOtp()`. 
+
+**Important Note:** The development mode will only work when the recipient phone number has an admin role in your Zalo Official Account. Regular phone numbers will not receive messages in development mode.
+
+```php
+$response = $client
+    ->setAuthorization('your_access_token')
+    ->sendOtp([
+        'phone' => '0123456789', // Must be an admin phone number
+        'mode' => 'development', // Testing mode
+        'template_id' => 'your_template_id',
+        'template_data' => [
+            'otp' => '123456'
+        ]
+    ]);
+```
 
 // Get response
 echo $response->body();
@@ -101,10 +121,12 @@ use TrungDV\ZaloOtp\Facades\ZaloOtp;
 $client = ZaloOtp::getInstance();
 
 // Get message status
-$response = $client->getStatusMessage([
-    'message_id' => '1234567890',
-    'phone' => '0123456789'
-]);
+$response = $client
+    ->setAuthorization({asset_token})
+    ->getStatusMessage([
+        'message_id' => '1234567890',
+        'phone' => '0123456789'
+    ]);
 
 // Get response
 echo $response->body();
