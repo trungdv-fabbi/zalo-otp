@@ -195,14 +195,14 @@ class ZaloClient
 
     public function toCurlFromPendingRequest(PendingRequest $request, string $method, string $url, array $params = []): string
     {
+        // Debug CURL
         $curl = "curl -X {$method} \"{$url}\" \\\n";
 
         // Headers
         foreach ($request->getOptions()['headers'] ?? [] as $key => $value) {
             $curl .= "  -H \"{$key}: {$value}\" \\\n";
         }
-
-        // Body (json hoặc form)
+        // Body
         if (!empty($params)) {
             $contentType = $request->getOptions()['headers']['Content-Type'] ?? '';
             if (str_contains($contentType, 'application/x-www-form-urlencoded')) {
