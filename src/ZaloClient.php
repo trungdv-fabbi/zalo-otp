@@ -77,14 +77,14 @@ class ZaloClient
     public function http(): PendingRequest
     {
         $http = Http::withHeaders($this->headers);
-        if(!empty($this->params)) {
+        if (!empty($this->params)) {
             // Check if Content-Type is form-urlencoded
             if (isset($this->headers['Content-Type']) &&
                 str_contains($this->headers['Content-Type'], 'application/x-www-form-urlencoded')) {
                 $http = $http->asForm();
             }
-            $http = $http->withBody(json_encode($this->params));
         }
+
         return $http;
     }
 
@@ -155,7 +155,6 @@ class ZaloClient
                 "refresh_token" => $this->refresh_token
             ]);
         $this->response = $this->http()
-            ->asForm()
             ->post($this->request_url);
         return $this->response;
     }
@@ -192,5 +191,28 @@ class ZaloClient
     public function formatPhoneNumber(string $phoneNumber = '')
     {
         return preg_replace('/^0/', '84', $phoneNumber);
+    }
+
+    public function toCurlFromPendingRequest(PendingRequest $request, string $method, string $url, array $params = []): string
+    {
+        $curl = "curl -X {$method} \"{$url}\" \\\n";
+
+        // Headers
+        foreach ($request->getOptions()['headers'] ?? [] as $key => $value) {
+            $curl .= "  -H \"{$key}: {$value}\" \\\n";
+        }
+
+        // Body (json hoặc form)
+        if (!empty($params)) {
+            $contentType = $request->getOptions()['headers']['Content-Type'] ?? '';
+            if (str_contains($contentType, 'application/x-www-form-urlencoded')) {
+                $body = http_build_query($params);
+            } else {
+                $body = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+            $curl .= "  -d '" . $body . "'";
+        }
+
+        return $curl;
     }
 }

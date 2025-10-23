@@ -13,15 +13,15 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "TrungDV",
-            "email": "trungdv@example.com",
+            "name": "trungdv-fabbi",
+            "email": "trungdv@fabbi.io",
             "homepage": "https://github.com/trungdv"
         }
     ],
-    "homepage": "https://github.com/trungdv/zalo-otp",
+    "homepage": "https://github.com/trungdv-fabbi/zalo-otp",
     "support": {
-        "issues": "https://github.com/trungdv/zalo-otp/issues",
-        "source": "https://github.com/trungdv/zalo-otp"
+        "issues": "https://github.com/trungdv-fabbi/zalo-otp/issues",
+        "source": "https://github.com/trungdv-fabbi/zalo-otp"
     },
     "require": {
         "php": "^8.1",
