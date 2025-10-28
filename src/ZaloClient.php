@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use TrungDV\ZaloOtp\Enums\ErrorType;
+use TrungDV\ZaloOtp\Consts\ZaloErrorCode;
+use TrungDV\ZaloOtp\Exceptions\ZaloException;
 
 class ZaloClient
 {
@@ -75,7 +77,7 @@ class ZaloClient
                 $this->response = $this->http()->{$method}($url, $this->params);
             }
 
-            return $this->response;
+            return $this->handleResponse($this->response);
         }
     }
 
@@ -217,6 +219,32 @@ class ZaloClient
     public function formatPhoneNumber(string $phoneNumber = '')
     {
         return preg_replace('/^0/', '84', $phoneNumber);
+    }
+
+    /**
+     * Handle Zalo API response and throw exception if error occurs
+     *
+     * @param Response $response
+     * @return array
+     * @throws ZaloException
+     */
+    public function handleResponse(Response $response): array
+    {
+        if ($response->failed()) {
+            throw ZaloException::fromResponse([
+                'error' => ZaloErrorCode::UNKNOWN_ERROR,
+                'message' => 'HTTP request failed with status ' . $response->status(),
+            ]);
+        }
+
+        $data = $response->json();
+
+        // Check if response contains error
+        if (isset($data['error']) && $data['error'] !== 0) {
+            throw ZaloException::fromResponse($data);
+        }
+
+        return $data;
     }
 
     public function toCurlFromPendingRequest(PendingRequest $request, string $method, string $url, array $params = []): string
