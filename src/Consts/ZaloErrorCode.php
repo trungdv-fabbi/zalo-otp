@@ -6,20 +6,19 @@ namespace TrungDV\ZaloOtp\Consts;
 
 enum ZaloErrorCode: int
 {
-    case SUCCESS = 0;
-    case UNKNOWN_ERROR = -100;
-    case APPLICATION_INVALID = -101;
-    case APPLICATION_NOT_EXISTED = -102;
-    case APPLICATION_NOT_ACTIVATED = -103;
-    case APP_SECRET_KEY_INVALID = -104;
-    case APPLICATION_NOT_LINK_TO_OA = -105;
-    case METHOD_UNSUPPORTED = -106;
-    case MESSAGE_ID_INVALID = -107;
-    case PHONE_NUMBER_INVALID = -108;
+    public const SUCCESS = 0;
     public const UNKNOWN_ERROR = -100;
-    case TEMPLATE_ID_INVALID = -109;
-    case CAN_NOT_EDIT_TEMPLATE = -1091;
-    case ZALO_VERSION_UNSUPPORTED = -110;
+    public const APPLICATION_INVALID = -101;
+    public const APPLICATION_NOT_EXISTED = -102;
+    public const APPLICATION_NOT_ACTIVATED = -103;
+    public const APP_SECRET_KEY_INVALID = -104;
+    public const APPLICATION_NOT_LINK_TO_OA = -105;
+    public const METHOD_UNSUPPORTED = -106;
+    public const MESSAGE_ID_INVALID = -107;
+    public const PHONE_NUMBER_INVALID = -108;
+    public const TEMPLATE_ID_INVALID = -109;
+    public const CAN_NOT_EDIT_TEMPLATE = -1091;
+    public const ZALO_VERSION_UNSUPPORTED = -110;
     public const TEMPLATE_DATA_EMPTY = -111;
     public const TEMPLATE_DATA_TYPE_NOT_DEFINE = -112;
     public const PARAMETER_BREAKS_MAX_LENGTH = -1121;
